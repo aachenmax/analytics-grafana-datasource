@@ -39,7 +39,7 @@ System.register(["./queryAttributes"], function (_export, _context) {
         DEVICE_TYPE: 'DEVICE_TYPE',
         DEVICE_CLASS: 'DEVICE_CLASS',
         DOMAIN: 'DOMAIN',
-        DOWNLOAD_RATE: 'DOWNLOAD_RATE',
+        DOWNLOAD_SPEED: 'DOWNLOAD_SPEED',
         ERROR_CODE: 'ERROR_CODE',
         ERROR_MESSAGE: 'ERROR_MESSAGE',
         EXPERIMENT_NAME: 'EXPERIMENT_NAME',

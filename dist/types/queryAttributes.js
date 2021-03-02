@@ -39,7 +39,7 @@ System.register([], function (_export, _context) {
         DAYPART: 'DAYPART',
         DEVICE_TYPE: 'DEVICE_TYPE',
         DOMAIN: 'DOMAIN',
-        DOWNLOAD_RATE: 'DOWNLOAD_RATE',
+        DOWNLOAD_SPEED: 'DOWNLOAD_SPEED',
         DROPPED_FRAMES: 'DROPPED_FRAMES',
         DURATION: 'DURATION',
         ERROR_CODE: 'ERROR_CODE',
@@ -313,7 +313,7 @@ System.register([], function (_export, _context) {
           case ATTRIBUTE.CLIENT_TIME:
           case ATTRIBUTE.DRM_LOAD_TIME:
           case ATTRIBUTE.DROPPED_FRAMES:
-          case ATTRIBUTE.DOWNLOAD_RATE:
+          case ATTRIBUTE.DOWNLOAD_SPEED:
           case ATTRIBUTE.DURATION:
           case ATTRIBUTE.ERROR_CODE:
           case ATTRIBUTE.PAGE_LOAD_TIME:
