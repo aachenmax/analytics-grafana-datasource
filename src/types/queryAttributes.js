@@ -81,6 +81,8 @@ export const ATTRIBUTE = {
   VIDEO_WINDOW_WIDTH: 'VIDEO_WINDOW_WIDTH',
   VIDEOTIME_END: 'VIDEOTIME_END',
   VIDEOTIME_START: 'VIDEOTIME_START',
+  VIDEOSTART_FAILED: 'VIDEOSTART_FAILED',
+  VIDEOSTART_FAILED_REASON: 'VIDEOSTART_FAILED_REASON',
   VIEWTIME: 'VIEWTIME',
   YEAR: 'YEAR',
   DRM_TYPE: 'DRM_TYPE',
@@ -260,6 +262,7 @@ export const convertFilterValueToProperType = (filter) => {
     } catch (e) { throw Error('Couldn\'t parse IN filter, please provide data in JSON array form (e.g.: ["Firefox", "Chrome"]).'); }
   }
   switch (filter.name) {
+    case ATTRIBUTE.VIDEOSTART_FAILED:
     case ATTRIBUTE.IS_CASTING:
     case ATTRIBUTE.IS_LIVE:
     case ATTRIBUTE.IS_MUTED: return rawValue === 'true';
