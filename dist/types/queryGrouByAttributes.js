@@ -42,6 +42,7 @@ System.register(["./queryAttributes"], function (_export, _context) {
         DOWNLOAD_SPEED: 'DOWNLOAD_SPEED',
         ERROR_CODE: 'ERROR_CODE',
         ERROR_MESSAGE: 'ERROR_MESSAGE',
+        ERROR_DATA: 'ERROR_DATA',
         EXPERIMENT_NAME: 'EXPERIMENT_NAME',
         HOUR: 'HOUR',
         IMPRESSION_ID: 'IMPRESSION_ID',

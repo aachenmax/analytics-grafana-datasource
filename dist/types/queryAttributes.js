@@ -20,6 +20,7 @@ System.register([], function (_export, _context) {
         AUDIO_BITRATE: 'AUDIO_BITRATE',
         AUTOPLAY: 'AUTOPLAY',
         BROWSER: 'BROWSER',
+        BROWSER_IS_BOT: 'BROWSER_IS_BOT',
         BROWSER_VERSION_MAJOR: 'BROWSER_VERSION_MAJOR',
         BROWSER_VERSION_MINOR: 'BROWSER_VERSION_MINOR',
         BUFFERED: 'BUFFERED',
@@ -44,6 +45,7 @@ System.register([], function (_export, _context) {
         DROPPED_FRAMES: 'DROPPED_FRAMES',
         DURATION: 'DURATION',
         ERROR_CODE: 'ERROR_CODE',
+        ERROR_DATA: 'ERROR_DATA',
         ERROR_MESSAGE: 'ERROR_MESSAGE',
         ERROR_PERCENTAGE: 'ERROR_PERCENTAGE',
         ERROR_RATE: 'ERROR_RATE',
@@ -310,6 +312,7 @@ System.register([], function (_export, _context) {
           case ATTRIBUTE.VIDEOSTART_FAILED:
           case ATTRIBUTE.IS_CASTING:
           case ATTRIBUTE.IS_LIVE:
+          case ATTRIBUTE.BROWSER_IS_BOT:
           case ATTRIBUTE.IS_MUTED:
             return rawValue === 'true';
 
