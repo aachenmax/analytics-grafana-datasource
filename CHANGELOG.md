@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Development
 
+### Added
+
+- Grafana ad hoc filters
+- order by interval option in query editor
+- missing attributes for `dimension` and `orderBy`
+- query option to adjust time range to complete datapoints based on current interval
+
 ## 0.0.3
 
 ### Added

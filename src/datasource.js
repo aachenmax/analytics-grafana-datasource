@@ -1,9 +1,10 @@
 import _ from 'lodash';
-import { convertFilterValueToProperType, ATTRIBUTE, METRICS_ATTRIBUTE_LIST } from './types/queryAttributes';
+import { convertFilterValueToProperType, ATTRIBUTE, ATTRIBUTE_LIST, AD_ATTRIBUTE_LIST, METRICS_ATTRIBUTE_LIST, ORDERBY_ATTRIBUTES, getAsOptionsList } from './types/queryAttributes';
 import { AGGREGATION } from './types/aggregations';
-import { calculateAutoInterval, QUERY_INTERVAL } from './types/intervals';
+import { calculateAutoInterval, getMomentTimeUnitForQueryInterval, QUERY_INTERVAL } from './types/intervals';
 import { transform } from './result_transformer';
 import { ResultFormat } from './types/resultFormat';
+import { OPERATOR } from './types/operators';
 
 const getApiRequestUrl = (baseUrl, isAdAnalytics, isMetric) => {
   if (isAdAnalytics === true) {
@@ -13,6 +14,25 @@ const getApiRequestUrl = (baseUrl, isAdAnalytics, isMetric) => {
     return baseUrl + '/analytics/metrics';
   }
   return baseUrl + '/analytics/queries';
+};
+
+const mapMathOperatorToAnalyticsFilterOperator = (operator) => {
+  switch (operator) {
+    case '=':
+      return OPERATOR.EQ;
+    case '!=':
+      return OPERATOR.NE;
+    case '<':
+      return OPERATOR.LT;
+    case '<=':
+      return OPERATOR.LTE;
+    case '>':
+      return OPERATOR.GT;
+    case '>=':
+      return OPERATOR.GTE;
+    default:
+      return operator;
+  }
 };
 
 export class BitmovinAnalyticsDatasource {
@@ -60,7 +80,12 @@ export class BitmovinAnalyticsDatasource {
       target.resultFormat = target.resultFormat || ResultFormat.TIME_SERIES;
       target.interval = target.interval || QUERY_INTERVAL.HOUR;
 
-      const filters = _.map(target.filter, filter => {
+      const filters = _.map([...target.filter, ...query.adhocFilters], e => {
+        let filter = {
+          name: (e.name) ? e.name : e.key,
+          operator: mapMathOperatorToAnalyticsFilterOperator(e.operator),
+          value: this.templateSrv.replace(e.value, options.scopedVars)
+        }
         return {
           name: filter.name,
           operator: filter.operator,
@@ -78,7 +103,7 @@ export class BitmovinAnalyticsDatasource {
 
       let isMetric = METRICS_ATTRIBUTE_LIST.includes(target.dimension);
       let urlAppendix = '';
-      
+
       if (isMetric) {
         urlAppendix = target.dimension;
         data['metric'] = target.dimension
@@ -87,16 +112,33 @@ export class BitmovinAnalyticsDatasource {
         target.dimension = target.dimension || ATTRIBUTE.LICENSE_KEY;
         urlAppendix = target.metric
         data['dimension'] = target.dimension;
-    
-          if (target.metric === 'percentile') {
-            data['percentile'] = target.percentileValue;
-          }
+
+        if (target.metric === 'percentile') {
+          data['percentile'] = target.percentileValue;
+        }
       }
 
       if (target.resultFormat === ResultFormat.TIME_SERIES) {
-        data['interval'] = target.interval === QUERY_INTERVAL.AUTO ? calculateAutoInterval(options.intervalMs) : target.interval;
+        data['interval'] = target.interval;
+        if (target.interval === QUERY_INTERVAL.AUTO) {
+          const intervalMs = options.range.to.valueOf() - options.range.from.valueOf();
+          data['interval'] = calculateAutoInterval(intervalMs);
+        }
+
+        if (target.intervalSnapTo === true) {
+          const intervalTimeUnit = getMomentTimeUnitForQueryInterval(data['interval']);
+          if (intervalTimeUnit != null) {
+            data['start'] = options.range.from.startOf(intervalTimeUnit).toISOString();
+            data['end'] = options.range.to.startOf(intervalTimeUnit).toISOString();
+          }
+        }
       }
       data['groupBy'] = target.groupBy;
+      data['orderBy'].forEach(e => {
+        if (e.name == ORDERBY_ATTRIBUTES.INTERVAL) {
+          e.name = data['interval'];
+        }
+      });
       data['limit'] = Number(target.limit) || undefined;
       var apiRequestUrl = getApiRequestUrl(this.url, this.isAdAnalytics, isMetric);
 
@@ -135,6 +177,13 @@ export class BitmovinAnalyticsDatasource {
 
   metricFindQuery(query) {
 
+  }
+
+  getTagKeys(options) {
+    if (this.isAdAnalytics) {
+      return Promise.resolve(getAsOptionsList(AD_ATTRIBUTE_LIST));
+    }
+    return Promise.resolve(getAsOptionsList(ATTRIBUTE_LIST));
   }
 
   doRequest(options) {
